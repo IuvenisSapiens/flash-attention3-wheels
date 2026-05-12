@@ -45,8 +45,6 @@ jobs:
         uses: Jimver/cuda-toolkit@v0.2.35
         with:
           cuda: ${{ matrix.cuda_full }}
-          method: 'network'
-          sub-packages: '["nvcc", "cudart", "thrust"]'
 
       - name: Expand Windows page file
         shell: pwsh

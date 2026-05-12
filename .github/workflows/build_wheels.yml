@@ -341,8 +341,6 @@ jobs:
         uses: ./.jimver-cuda-toolkit
         with:
           cuda: ${{ matrix.cuda_full }}
-          method: 'network'
-          sub-packages: '["nvcc", "cudart", "thrust"]'
 
       - name: Build wheel
         shell: pwsh
