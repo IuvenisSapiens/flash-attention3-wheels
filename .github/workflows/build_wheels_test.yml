@@ -7,6 +7,10 @@ on:
         description: 'TORCH_CUDA_ARCH_LIST for the build (e.g. "12.0" for sm_120 / RTX 5060 Blackwell). Leave empty for default.'
         required: false
         default: '12.0'
+      max_jobs:
+        description: 'MAX_JOBS for parallel NVCC compilation (default 2 for sm_120 to avoid OOM).'
+        required: false
+        default: '2'
 
 jobs:
   build-win-wheels:
@@ -20,6 +24,7 @@ jobs:
     env:
       TORCH_CUDA_ARCH_LIST: ${{ inputs.torch_cuda_arch_list || '12.0' }}
       CUDAARCHS: ${{ inputs.torch_cuda_arch_list || '12.0' }}
+      PYTHONUNBUFFERED: "1"
 
     steps:
       - name: Enable Windows long-path
@@ -41,15 +46,27 @@ jobs:
         with:
           cuda: ${{ matrix.cuda_full }}
 
+      - name: Pre-build diagnostics
+        shell: pwsh
+        run: |
+          Write-Host "=== System Info ==="
+          Write-Host "TORCH_CUDA_ARCH_LIST = $env:TORCH_CUDA_ARCH_LIST"
+          Write-Host "CUDAARCHS            = $env:CUDAARCHS"
+          Write-Host "MAX_JOBS             = ${{ inputs.max_jobs || '2' }}"
+          $os = Get-CimInstance Win32_OperatingSystem
+          Write-Host "Total Physical Memory: $([math]::Round($os.TotalVisibleMemorySize / 1MB, 1)) GB"
+          Write-Host "Free Physical Memory:  $([math]::Round($os.FreePhysicalMemory / 1MB, 1)) GB"
+          $disk = Get-CimInstance Win32_LogicalDisk -Filter "DeviceID='C:'"
+          Write-Host "C: Free Disk Space:    $([math]::Round($disk.FreeSpace / 1GB, 1)) GB"
+          Write-Host "CPU Cores:             $env:NUMBER_OF_PROCESSORS"
+
       - name: Build wheel
         shell: pwsh
         run: |
-          Write-Host "TORCH_CUDA_ARCH_LIST = $env:TORCH_CUDA_ARCH_LIST"
-          Write-Host "CUDAARCHS            = $env:CUDAARCHS"
           scripts/build_wheel_test.ps1 `
             -CudaVersion "${{ matrix.cuda }}" `
             -TorchVersion "${{ matrix.torch }}" `
-            -MaxJobs 7
+            -MaxJobs "${{ inputs.max_jobs || '2' }}"
 
       - name: Upload wheel artifact
         uses: actions/upload-artifact@v7
