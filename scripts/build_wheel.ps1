@@ -35,6 +35,22 @@ $env:NVCC_PREPEND_FLAGS = "-Xcudafe --diag_suppress=177 -Xcudafe --diag_suppress
 $env:DISTUTILS_USE_SDK = 1
 $env:PYTHONUNBUFFERED = 1
 
+# Detect CUDA 13.0+ once — used for /Zc:preprocessor and alignment patches.
+$isCuda13 = $false
+try {
+    $cudaVer = [Version]$CudaVersion
+    $isCuda13 = ($cudaVer -ge [Version]"13.0")
+} catch {
+    Write-Warning "Could not parse CUDA version '$CudaVersion'; skipping 13.0+ workarounds."
+}
+
+# CUDA 13.0+ CCCL headers require the MSVC standard conforming preprocessor.
+# Older MSVC uses a traditional preprocessor that CCCL rejects with a fatal error.
+if ($isCuda13) {
+    $env:CL = "/Zc:preprocessor $env:CL"
+    Write-Host "Added /Zc:preprocessor to CL for CUDA 13.0+ CCCL compatibility"
+}
+
 Write-Host "Installing dependencies..."
 python -m pip install --upgrade pip
 pip install ninja packaging wheel setuptools numpy change-wheel-version
@@ -63,13 +79,6 @@ Write-Host "Patch applied successfully"
 # when compiling NVCC-generated stub code.  The fix caps host-side alignment at
 # 64 bytes in cutlass and in the CUDA toolkit header.
 # Reference: https://github.com/SystemPanic/vllm-windows/issues/41
-$isCuda13 = $false
-try {
-    $cudaVer = [Version]$CudaVersion
-    $isCuda13 = ($cudaVer -ge [Version]"13.0")
-} catch {
-    Write-Warning "Could not parse CUDA version '$CudaVersion' for alignment-fix check; skipping."
-}
 if ($isCuda13) {
     Write-Host "CUDA 13.0+ detected, applying C2719 alignment fix for Windows..."
 
