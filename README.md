@@ -13,6 +13,10 @@
 
 ## Recent Updates
 
+- **2026-05-19**: 🆕 CUDA 13.2 and PyTorch 2.12.0 support added
+- **2026-05-19**: 🐛 Windows CUDA 13.0+ CCCL compatibility fix (`/Zc:preprocessor`)
+- **2026-05-19**: ⚙️ Windows builds use `_dev` CUDA sub-packages for correct headers
+- **2026-05-19**: ✅ Windows wheel export verification (PyInit symbols) added to build
 - **2026-03-19**: 🆕 CUDA 13.0 support added for Windows and Linux
 - **2026-03-16**: ⚙️ GitHub Actions updated to Node.js 24 compatible versions
 - **2026-03-04**: 🐛 Fixed corrupt patch error in Windows builds
@@ -28,16 +32,19 @@ Pick the line that matches your setup (change `cu128` / `torch280` if needed):
 # CUDA 12.8 + PyTorch 2.8.0
 pip install flash_attn_3 \
   --find-links https://windreamer.github.io/flash-attention3-wheels/cu128_torch280
+
+# CUDA 13.2 + PyTorch 2.12.0
+pip install flash_attn_3 \
+  --find-links https://windreamer.github.io/flash-attention3-wheels/cu132_torch2120
 ```
 
 ## How to pick the right index
 
 Visit the [GitHub Pages site](https://windreamer.github.io/flash-attention3-wheels) and choose the link that matches:
 
+* CUDA 13.2 → `cu132_torch...`
 * CUDA 13.0 → `cu130_torch...`
-* CUDA 12.9 → `cu129_torch...`
 * CUDA 12.8 → `cu128_torch...`
-* CUDA 12.6 → `cu126_torch...`
 
 Each page shows the one-liner you need.
 

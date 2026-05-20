@@ -27,7 +27,7 @@ templates/              # Jinja2 HTML templates for index pages
 ## Build & Release
 
 - **CI**: GitHub Actions, biweekly (every 2nd/4th Sun 22:00 UTC) + `workflow_dispatch`
-- **Matrix**: CUDA {12.8,13.0} × PyTorch {2.8.0,2.11.0} × {linux, windows, arm}
+- **Matrix**: CUDA {12.8,13.0,13.2} × PyTorch {2.8.0,2.12.0} × {linux, windows, arm}
 - **Process**: Clone upstream flash-attention → build wheel → rename with date/cuda/torch/abi hash → upload as GitHub Release
 - **Wheel naming**: `flash_attn_3-{ver}+{date}+cu{cuda}torch{torch}cxx11abi{abi}+{hash}-{platform}.whl`
 - **Patches applied**: cuda_h_alignment_fix, cutlass_alignment_fix, windows_fix (conditional)

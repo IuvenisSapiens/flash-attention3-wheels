@@ -131,9 +131,9 @@ class WheelIndexGenerator:
             "filename": filename,
             "base_version": m["base"],
             "build_date": m["date"],
-            "cuda_version": m["cuda"],  # 12.3
-            "torch_version": m["torch"],  # 2.4.0
-            "cxx11_abi": m["abi"],  # TRUE / FALSE
+            "cuda_version": m["cuda"],  # e.g. "128", "130", "132"
+            "torch_version": m["torch"],  # e.g. "280", "2110", "2120"
+            "cxx11_abi": m["abi"],  # "true" / "false"
             "python_version": f"{m['py'][0]}.{m['py'][1:]}",  # 310 -> 3.10
             "platform": m["platform"],  # linux_x86_64, win_amd64, linux_aarch64
         }
