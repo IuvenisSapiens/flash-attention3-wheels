@@ -12,9 +12,9 @@ on:
         required: false
         default: ''
       max_jobs:
-        description: 'MAX_JOBS for ARM build (default 4)'
+        description: 'MAX_JOBS for ARM build (default 5)'
         required: false
-        default: '6'
+        default: '5'
 
 jobs:
   prepare-matrix:
