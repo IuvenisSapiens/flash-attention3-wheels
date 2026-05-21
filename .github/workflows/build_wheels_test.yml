@@ -14,7 +14,7 @@ on:
       max_jobs:
         description: 'MAX_JOBS for ARM build (default 4)'
         required: false
-        default: '4'
+        default: '6'
 
 jobs:
   prepare-matrix:
@@ -36,7 +36,6 @@ jobs:
     runs-on: "cirun-gcp-2xl--${{ github.run_id }}"
     timeout-minutes: 1080
     strategy:
-      max-parallel: 3
       fail-fast: false
       matrix: ${{fromJson(needs.prepare-matrix.outputs.arm-matrix)}}
 
@@ -62,6 +61,7 @@ jobs:
               cd /workspace
               apt-get update && apt-get install -y python-is-python3 git ninja-build python3-pip python3-dev
               bash scripts/build_wheel.sh ${{ matrix.cuda }} ${{ matrix.torch }} ${{ inputs.max_jobs || '4' }} | grep -v "ptxas info" | grep -v "bytes stack frame,"
+              chmod 666 /tmp/wheels/*.whl
             '
 
       - name: Upload wheel artifact

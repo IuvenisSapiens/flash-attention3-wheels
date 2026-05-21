@@ -16,6 +16,7 @@ export LD_LIBRARY_PATH=${CUDA_HOME}/lib64:${LD_LIBRARY_PATH}
 export MAX_JOBS=${MAX_JOBS}
 export FLASH_ATTENTION_FORCE_BUILD=TRUE
 export CUDAFLAGS="-t 2"
+export CFLAGS="-Wno-deprecated-declarations"
 
 echo "Installing dependencies..."
 pip install --upgrade pip
@@ -35,8 +36,8 @@ python setup.py bdist_wheel
 
 ORIGINAL_WHEEL=$(find dist -name "*.whl" | head -1)
 if [ -z "$ORIGINAL_WHEEL" ]; then
-    echo "Error: Wheel file not found"
-    exit 1
+  echo "Error: Wheel file not found"
+  exit 1
 fi
 
 echo "Original wheel built: $ORIGINAL_WHEEL"
@@ -46,7 +47,7 @@ echo "Build date: $BUILD_DATE"
 
 CXX11_ABI="FALSE"
 if python -c "import torch; print(torch._C._GLIBCXX_USE_CXX11_ABI)" 2>/dev/null | grep -q "True"; then
-    CXX11_ABI="TRUE"
+  CXX11_ABI="TRUE"
 fi
 
 CUDA_VERSION_CLEAN=$(echo $CUDA_VERSION | tr -d '.')
@@ -60,8 +61,8 @@ echo "Modifying wheel with local version..."
 MODIFIED_WHEEL=$(python -m change_wheel_version "$ORIGINAL_WHEEL" --local-version "$LOCAL_VERSION" --delete-old-wheel)
 
 if [ -z "$MODIFIED_WHEEL" ] || [ ! -f "$MODIFIED_WHEEL" ]; then
-    echo "Error: Failed to modify wheel version"
-    exit 1
+  echo "Error: Failed to modify wheel version"
+  exit 1
 fi
 
 echo "Modified wheel created: $MODIFIED_WHEEL"
