@@ -6,3 +6,15 @@ runners:
     machine_image: microsoftvisualstudio:visualstudiowsplustools:vs-2022-com-ws2025-datacenter-azure-gen2:latest
     labels:
       - "cirun-azure-windows-runner"
+
+  - name: cirun-gcp-2xl
+    cloud: gcp
+    instance_type: c4a-standard-16
+    machine_image: ubuntu-2204-jammy-arm64-v20260520
+    region: europe-west4-a
+    preemptible: true
+    extra_config:
+      baseDisk:
+        diskSizeGb: 100
+    labels:
+      - cirun-gcp-2xl
