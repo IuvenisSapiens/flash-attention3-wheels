@@ -42,6 +42,13 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
+      - name: Install Google Cloud Ops Agent
+        run: |
+          curl -sSO https://dl.google.com/cloudagents/add-google-cloud-ops-agent-repo.sh
+          sudo bash add-google-cloud-ops-agent-repo.sh --also-install
+          sudo systemctl enable google-cloud-ops-agent
+          sudo systemctl start google-cloud-ops-agent
+
       - name: Install Docker
         run: |
           sudo apt-get update
